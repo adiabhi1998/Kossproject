@@ -39,12 +39,14 @@ void floyd_warshall(int a[][100])//using floyd warshall algorithm, as we need mu
 
 int main()
 {
-    //adjacency matrix for a weighted graph of stations
-    int a[100][100];
-    int t[100][100];
-cout<<"enter number of stations";    
+	cout<<"Welcome.This program computes shortest paths between two stations based on cost and time when there is no direct train\n between the two.If there is, it reports the time and cost of the direct train,else it uses Floyd Warshall\n algorithm to compute the shortest path\n"
+    
+    ;int a[100][100];//adjacency matrix for a weighted graph of stations to maintain cost
+    int t[100][100];//same as above, for maintaing times of travel between stations
+    char ch3;//to be used later as a choice for continuing the program or exiting
+	cout<<"enter number of stations";    
     cin>>nodes;
-  cout<<"enter the number of connections";
+  cout<<"enter the number of trains\n";
   
     int edges;
     cin>>edges;
@@ -58,23 +60,43 @@ for(int j=1;j<=nodes;j++)
 }
     for(int i=0;i<edges;i++)
     {int x,b;
+    cout<<"enter two station codes of travel for train "<<i+1<<"(station codes are between 1 to "<<nodes<<")";
     cin>>x>>b;
-    cout<<"enter cost of ticket and time of journey in minutes";
+    
+    if(x>nodes||b>nodes||x<=0|b<=0)
+    {
+    	cout<<"\n enter valid station codes\n";
+    	cin>>x>>b;
+	}
+    cout<<"\nenter cost of ticket and time of journey in minutes\n";
     int cost;
     cin>>cost;
     int time;
     cin>>time;
+    
     a[x][b]=a[b][x]=cost;//assuming that trains travel both ways
     t[x][b]=t[b][x]=time;
+	}
+	
     
-}
+do{
 
-    cout<<"enter stations for shortest path";
+
+    cout<<"\nenter stations for shortest path\n";
     int x1,x2;
     cin>>x1>>x2;
     if(a[x1][x2]!=inf)
-    cout<<"There is a direct train between the two stations costing rs."<<a[x1][x2]<<"and taking time "<<t[x1][x2]<<" mins";
-    
+   {
+	 cout<<"\nThere is a direct train between the two stations costing rs."<<a[x1][x2]<<"and taking time "<<t[x1][x2]<<" mins";
+	  cout<<"\n do you want to continue querying for more shortest/cheapest paths?Enter y for yes, any other key to exit \n";
+    char ch2;
+    cin>>ch2;
+    if(ch2=='y')
+    continue;
+    else
+    break;
+
+}
     cout<<"do you want to minimize time or cost?press t for time and c for cost\n "
     ;char ch;
     cin>>ch;
@@ -83,7 +105,19 @@ for(int j=1;j<=nodes;j++)
     {
 	
     floyd_warshall(a);
-    cout<<" smallest cost is\n"<<floyd[x1][x2];
+    if(floyd[x1][x2]==inf)
+    {
+    	cout<<"\n no route exists between the two stations";
+    cout<<"\n do you want to continue querying for more shortest/cheapest paths?Enter y for yes, any other key to exit \n";
+    char ch2;
+    cin>>ch2;
+    if(ch2=='y')
+    continue;
+    else
+    break;
+	}
+
+    cout<<"\n smallest cost is\n"<<floyd[x1][x2];
     cout<<"\nshortest path is\n";
     int k=x1;
     cout<<k<<"->";
@@ -96,7 +130,19 @@ for(int j=1;j<=nodes;j++)
 else
 {
 	floyd_warshall(t);
-    cout<<" fastest time is\n"<<floyd[x1][x2];
+	if(floyd[x1][x2]==inf)
+	{
+		 	cout<<"\n no route exists between the two stations";
+    cout<<"\n do you want to continue querying for more shortest/cheapest paths?Enter y for yes, any other key to exit \n";
+    char ch2;
+    cin>>ch2;
+    if(ch2=='y')
+    continue;
+    else
+    break;
+
+	}
+    cout<<"\n fastest time is\n"<<floyd[x1][x2]/60<<" hours "<<floyd[x1][x2]%60<<" minutes";
     cout<<"\nshortest time path is\n";
     int k=x1;
     cout<<k<<"->";
@@ -107,10 +153,13 @@ else
 	}while(k!=x2);
 	
 }
+
+cout<<"\n do you want to continue querying for more shortest/cheapest paths?(press y for yes, any other key to exit)";
+cin>>ch3;
+;}while(ch3=='y');
         
         
     }
     
     
     
-
